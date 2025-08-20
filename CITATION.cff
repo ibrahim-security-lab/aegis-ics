@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+title: "Aegis-ICS"
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Sanusi"
+    given-names: "Ibrahim Babansoro"
+doi: "10.5281/zenodo.1234567"
+date-released: 2025-08-20
+version: "0.1.0"
