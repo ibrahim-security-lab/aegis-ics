@@ -21,19 +21,32 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: cd frontend && npm install && npm run build && npm run export
+      - run: |
+          cd frontend
+          npm install
+          npm run build  # generates ./frontend/out
 
       # Build MkDocs site
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.11
-      - run: pip install mkdocs-material && mkdocs build -f docs/mkdocs.yml
+      - run: |
+          pip install mkdocs-material
+          mkdocs build -f docs/mkdocs.yml -d site  # generates ./site
 
-      # Deploy
+      # Merge both outputs into one folder
+      - name: Prepare deployment folder
+        run: |
+          mkdir deploy
+          cp -r frontend/out/* deploy/
+          mkdir -p deploy/docs
+          cp -r site/* deploy/docs/
+
+      # Upload artifact for Pages
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./frontend/out
+          path: ./deploy
 
   deploy:
     needs: build
