@@ -24,29 +24,19 @@ jobs:
       - run: |
           cd frontend
           npm install
-          npm run build  # generates ./frontend/out
+          npm run build   # ✅ 'next build' now handles static export (out/)
 
-      # Build MkDocs site
+      # Build MkDocs site (optional if you want docs included)
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.11
-      - run: |
-          pip install mkdocs-material
-          mkdocs build -f docs/mkdocs.yml -d site  # generates ./site
+      - run: pip install mkdocs-material && mkdocs build -f docs/mkdocs.yml
 
-      # Merge both outputs into one folder
-      - name: Prepare deployment folder
-        run: |
-          mkdir deploy
-          cp -r frontend/out/* deploy/
-          mkdir -p deploy/docs
-          cp -r site/* deploy/docs/
-
-      # Upload artifact for Pages
+      # Upload built frontend (Next.js static export)
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./deploy
+          path: ./frontend/out
 
   deploy:
     needs: build
